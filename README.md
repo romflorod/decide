@@ -2,7 +2,7 @@
 
 Plataforma voto electrónico educativa
 =====================================
-Prueba de jenkins 2
+Prueba de jenkins 3
 El objetivo de este proyecto es implementar una plataforma de voto
 electrónico seguro, que cumpla una serie de garantías básicas, como la
 anonimicidad y el secreto del voto.
