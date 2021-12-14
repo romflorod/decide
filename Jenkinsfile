@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { docker { image 'python:3.7.2' } }
 
     stages {
         stage('Build Master') {
@@ -7,16 +7,12 @@ pipeline {
                 branch 'master' 
             }
             steps {
-                /* Create/Activate  virtualenv */
-                python3 -m venv decide-enviroment
-                . ./decide-enviroment/bin/activate
-
-                /* Install Requirements */
+                sh '''
                 pip install -r requirements.txt
 
-                /* Run tests */
                 cd decide
                 ./manage.py test -v 2
+                '''
             }
         }
 
@@ -34,16 +30,12 @@ pipeline {
                 branch 'develop' 
             }
             steps {
-                /* Create/Activate  virtualenv */
-                python3 -m venv decide-enviroment
-                . ./decide-enviroment/bin/activate
-
-                /* Install Requirements */
+                sh '''
                 pip install -r requirements.txt
 
-                /* Run tests */
                 cd decide
                 ./manage.py test -v 2
+                '''
             }
         }
 
@@ -52,16 +44,12 @@ pipeline {
                 branch 'G1' 
             }
             steps {
-                /* Create/Activate  virtualenv */
-                python3 -m venv decide-enviroment
-                . ./decide-enviroment/bin/activate
-
-                /* Install Requirements */
+                sh '''
                 pip install -r requirements.txt
 
-                /* Run tests */
                 cd decide
-                ./manage.py test -v 2
+                ./manage.py test authentication -v 2
+                '''
             }
         }
 
@@ -70,16 +58,12 @@ pipeline {
                 branch 'G2' 
             }
             steps {
-                /* Create/Activate  virtualenv */
-                python3 -m venv decide-enviroment
-                . ./decide-enviroment/bin/activate
-
-                /* Install Requirements */
+                sh '''
                 pip install -r requirements.txt
 
-                /* Run tests */
                 cd decide
-                ./manage.py test -v 2
+                ./manage.py test booth -v 2
+                '''
             }
         }
 
@@ -88,16 +72,12 @@ pipeline {
                 branch 'G3' 
             }
             steps {
-                /* Create/Activate  virtualenv */
-                python3 -m venv decide-enviroment
-                . ./decide-enviroment/bin/activate
-
-                /* Install Requirements */
+                sh '''
                 pip install -r requirements.txt
 
-                /* Run tests */
                 cd decide
-                ./manage.py test -v 2
+                ./manage.py test voting -v 2
+                '''
             }
         }
     }
