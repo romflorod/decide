@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-BASEURL = 'https://decide-part-mulhacen.herokuapp.com/'
+BASEURL = 'https://decide-part-mulhacen.herokuapp.com'
 
 APIS = {
     'authentication': BASEURL,
