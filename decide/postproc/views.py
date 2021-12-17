@@ -85,6 +85,52 @@ class PostProcView(APIView):
         return Response(options)
 
 
+    def imperiali(self, options,escanyosTotales):
+        votosTotales =0
+        for i in options:
+            votosTotales= votosTotales+ i['votes']
+        
+        if votosTotales>0 and escanyosTotales>0:
+
+            q=round(options/(escanyosTotales+2))
+
+            escanyosAsigandos=0
+            for i in options:
+                votos= i['votes']
+                escanyos=math.floor(votos/q)
+                i.update({'postproc': escanyos})
+                escanyosAsigandos=escanyosAsigandos+i['postproc']
+            
+            #Mientras queden escaños libre
+
+            while(escanyosAsigandos<escanyosTotales):
+                #Se almacenan los votos residuo
+                for i in options:
+                    i.update({'votosResiduos': i['votes']- (q*i['postproc'])})
+                
+                
+                #se ordena según los votos residuos
+                ordenadoMayorMenor= options.sort(key = lambda i :-i['votosResiduos'])
+
+
+                #se añade un escaño más al que tenga mayor residuo
+                votoMayorResiduo= ordenadoMayorMenor[0]
+                votoMayorResiduo.update({'postproc': votoMayorResiduo['postproc']+1})
+
+                #se elimina la nueva clave para que no afecte a futuras iteraciones
+                for i in options:
+                    i.pop('votosResiduos')
+                
+            options.sort(key = lambda i :-i['postrproc'])
+
+            return Response(options)
+            
+        else:
+            for i in options:
+                i.update({'postproc': 0})
+            return Response(options)
+
+
     def post(self, request):
         """
          * type: IDENTITY | EQUALITY | WEIGHT
