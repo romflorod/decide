@@ -49,7 +49,7 @@ class PostProcTestCase(APITestCase):
     def test_saintelague3(self):
         data = {
                 'type': 'SAINTELAGUE',
-                'numEscanos': 4,
+                'numEscanyos': 4,
                 'options': [
                     { 'option': 'Option 1', 'number': 1, 'votes': 1200 },{ 'option': 'Option 2', 'number': 2, 'votes': 700 },
                     { 'option': 'Option 3', 'number': 3, 'votes': 650 },{ 'option': 'Option 4', 'number': 4, 'votes': 400 },
@@ -58,8 +58,8 @@ class PostProcTestCase(APITestCase):
         }
 
         expected_result = [
-            { 'option': 'Option 1', 'number': 1, 'votes': 1200, 'postproc': 0 },
-            { 'option': 'Option 2', 'number': 2, 'votes': 700, 'postproc': 0 },{ 'option': 'Option 3', 'number': 3, 'votes': 650, 'postproc': 0 },
+            { 'option': 'Option 1', 'number': 1, 'votes': 1200, 'postproc': 2 },
+            { 'option': 'Option 2', 'number': 2, 'votes': 700, 'postproc': 1 },{ 'option': 'Option 3', 'number': 3, 'votes': 650, 'postproc': 1 },
             { 'option': 'Option 4', 'number': 4, 'votes': 400, 'postproc': 0 },{ 'option': 'Option 5', 'number': 5, 'votes': 200, 'postproc': 0 }
         ]
         
