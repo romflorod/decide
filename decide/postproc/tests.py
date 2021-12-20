@@ -17,24 +17,21 @@ class PostProcTestCase(APITestCase):
 
     def test_identity(self):
         data = {
-            'type': 'IDENTITY',
+            'type': 'BIPARTITANSHIP',
+            'numEscanyos': 40,
             'options': [
-                { 'option': 'Option 1', 'number': 1, 'votes': 5 },
+                { 'option': 'Option 1', 'number': 1, 'votes': 50 },
                 { 'option': 'Option 2', 'number': 2, 'votes': 0 },
-                { 'option': 'Option 3', 'number': 3, 'votes': 3 },
-                { 'option': 'Option 4', 'number': 4, 'votes': 2 },
-                { 'option': 'Option 5', 'number': 5, 'votes': 5 },
-                { 'option': 'Option 6', 'number': 6, 'votes': 1 },
+                { 'option': 'Option 3', 'number': 3, 'votes': 30 },
+                { 'option': 'Option 4', 'number': 4, 'votes': 20 },
             ]
         }
 
         expected_result = [
-            { 'option': 'Option 1', 'number': 1, 'votes': 5, 'postproc': 5 },
-            { 'option': 'Option 5', 'number': 5, 'votes': 5, 'postproc': 5 },
-            { 'option': 'Option 3', 'number': 3, 'votes': 3, 'postproc': 3 },
-            { 'option': 'Option 4', 'number': 4, 'votes': 2, 'postproc': 2 },
-            { 'option': 'Option 6', 'number': 6, 'votes': 1, 'postproc': 1 },
-            { 'option': 'Option 2', 'number': 2, 'votes': 0, 'postproc': 0 },
+            { 'option': 'Option 1', 'number': 1, 'votes': 50, 'postproc': 25 },
+            { 'option': 'Option 5', 'number': 3, 'votes': 30, 'postproc': 15 },
+            { 'option': 'Option 3', 'number': 4, 'votes': 20, 'postproc': 0 },
+            { 'option': 'Option 4', 'number': 2, 'votes': 0, 'postproc': 0 },
         ]
 
         response = self.client.post('/postproc/', data, format='json')
