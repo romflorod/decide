@@ -20,7 +20,7 @@ class PostProcView(APIView):
         return Response(out)
 
 
-    def bipartitanship(self, options, numEscanyos):
+    def bipartishanship(self, options, numEscanyos):
         # función de ordenación
         def sortByVotes(e):
             return e['votes']
@@ -68,7 +68,6 @@ class PostProcView(APIView):
 
         if t == 'IDENTITY':
             return self.identity(opts)
-
         elif t == 'BIPARTISHANSHIP':
             return self.bipartishanship(options=opts, numEscanyos=numEscanyos)
 

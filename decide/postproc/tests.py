@@ -19,7 +19,7 @@ class PostProcTestCase(APITestCase):
 #comprueba que las dos opciones mayoritarias obtienen 25 y 15 escaños cada una
     def test_bipartitanship(self):
         data = {
-            'type': 'BIPARTITANSHIP',
+            'type': 'BIPARTISHANSHIP',
             'numEscanyos': 40,
             'options': [
                 { 'option': 'Option 1', 'number': 1, 'votes': 50 },
@@ -31,9 +31,9 @@ class PostProcTestCase(APITestCase):
 
         expected_result = [
             { 'option': 'Option 1', 'number': 1, 'votes': 50, 'postproc': 25 },
-            { 'option': 'Option 5', 'number': 3, 'votes': 30, 'postproc': 15 },
-            { 'option': 'Option 3', 'number': 4, 'votes': 20, 'postproc': 0 },
-            { 'option': 'Option 4', 'number': 2, 'votes': 0, 'postproc': 0 },
+            { 'option': 'Option 3', 'number': 3, 'votes': 30, 'postproc': 15 },
+            { 'option': 'Option 4', 'number': 4, 'votes': 20, 'postproc': 0 },
+            { 'option': 'Option 2', 'number': 2, 'votes': 0, 'postproc': 0 },
         ]
 
         response = self.client.post('/postproc/', data, format='json')
