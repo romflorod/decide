@@ -18,6 +18,38 @@ class PostProcView(APIView):
 
         out.sort(key=lambda x: -x['postproc'])
         return Response(out)
+    
+
+    def hamilton(self, options, numEscanyos):
+        #Definimos votos totales y el numero de escanyos asignados
+        votos = 0
+        numEscanyosAsignados=0
+        #Hacemos recuento de votos totales y le añadimos a cada opción otro valor llamado postproc en el que almacenaremos el numero de escanyos que le asignamos
+        for option in options:
+            option['postproc']=0
+            votos += option['votes']
+        #Creamos una lista vacia para introducir el resto de cada partido al anyadir los escanyos
+        lista=[]
+        if votos>0 and numEscanyos>0:
+            participantes = len(options)
+            #Recorremos las opciones y al atributo postproc que habiamos creado anteriormente le asignamos un numero de escanyos mediante 
+            #el siguiente calculo: (NumVotosPartido*NumEscanyos)//VotosTotales. El resultado sera una division exacta
+            #A su vez rellenamos la lista vacia con un diccionario en el que ponemos el nombre de la opcion y el resto de la division
+            #Tambien vamos incrementando el numero de escanyos asignados
+            for option in options:
+                option['postproc']=(option['votes']*numEscanyos)//votos
+                lista.append({'number':option['number'],'votes':(option['votes']*numEscanyos)%votos})
+                numEscanyosAsignados+=(option['votes']*numEscanyos)//votos
+
+
+            lista.sort(key=lambda o: o['votes'],reverse=True)
+            for option in lista:
+                i = option['number']-1
+                if(numEscanyosAsignados<numEscanyos):
+                    options[i].update({'postproc' : options[i]['postproc']+1})
+                    numEscanyosAsignados+=1
+        return Response(options)
+
 
     def HuntingtonHill(self,options,numEscanyos):
     
@@ -38,7 +70,10 @@ class PostProcView(APIView):
 
             while(numEscanyosAsig != numEscanyos):
 
+                #si llegamos a aplicar rounding rule y no llegamos al numero igual de escanos, 
+                #reseteamos de nuevo el numero de escanos asig y empezamos de nuevo
               ##si no se cumple la regla reseteamos  cero
+                
                 numEscanyosAsig = 0
 
                 for x in options:
@@ -70,6 +105,7 @@ class PostProcView(APIView):
                 #round q up to U.
 
                 if(numEscanyosAsig < numEscanyos):
+
                     limit = lower
                     lower = limit-rounding
                     upper = limit+rounding
@@ -110,7 +146,7 @@ class PostProcView(APIView):
 
     def post(self, request):
         """
-         * type: IDENTITY | HUNTINGTONHILL | DHONT
+         * type: IDENTITY | HUNTINGTONHILL | DHONT | HAMILTON
          * options: [
             {
              option: str,
@@ -125,7 +161,6 @@ class PostProcView(APIView):
         opts = request.data.get('options', [])
         numEscanyos = request.data.get('numEscanyos', 0)
 
-
         if t == 'IDENTITY':
             return self.identity(opts)
           
@@ -134,5 +169,8 @@ class PostProcView(APIView):
 
         elif t == 'DHONT':
             return self.dHont(options=opts, numEscanyos=numEscanyos)
+          
+        elif t== 'HAMILTON':
+            return self.hamilton(options=opts, numEscanyos=numEscanyos)
 
         return Response({})
