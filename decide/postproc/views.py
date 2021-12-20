@@ -2,7 +2,7 @@ from django.db import models
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import math
-import numpy as np
+#import numpy as np
 
 
 class PostProcView(APIView):
@@ -122,6 +122,52 @@ class PostProcView(APIView):
         return Response(options)
 
 
+    def imperiali(self, options,numEscanyos):
+        votosTotales = 0
+        
+        for i in options:
+            votosTotales= votosTotales+ i['votes']
+        
+        if votosTotales>0 and numEscanyos>0:
+
+            q=round(votosTotales/(numEscanyos+2),0)
+
+            escanyosAsigandos=0
+            for i in options:
+                votos= i['votes']
+                escanyos=math.floor(votos/q)
+                i.update({'postproc': escanyos})
+                escanyosAsigandos=escanyosAsigandos+i['postproc']
+            
+            #Mientras queden escaños libre
+
+            while(escanyosAsigandos<numEscanyos):
+                #Se almacenan los votos residuo
+                for i in options:
+                    i.update({'votosResiduos': i['votes']- (q*i['postproc'])})
+                
+                
+                #se ordena según los votos residuos
+                ordenadoMayorMenor= options.sort(key = lambda i :-i['votosResiduos'])
+
+
+                #se añade un escaño más al que tenga mayor residuo
+                votoMayorResiduo= ordenadoMayorMenor[0]
+                votoMayorResiduo.update({'postproc': votoMayorResiduo['postproc']+1})
+
+                #se elimina la nueva clave para que no afecte a futuras iteraciones
+                for i in options:
+                    i.pop('votosResiduos')
+                
+            options.sort(key = lambda i :-i['postproc'])
+
+            return Response(options)
+            
+        else:
+            for i in options:
+                i.update({'postproc': 0})
+            return Response(options)
+
     def dHont(self, options, numEscanyos):
 
         #Añadimos un campo para el contador de escaños asignados a cada opción
@@ -176,7 +222,7 @@ class PostProcView(APIView):
 
     def post(self, request):
         """
-         * type: IDENTITY | HUNTINGTONHILL | DHONT | HAMILTON | BIPARTITANSHIP
+         * type: IDENTITY | HUNTINGTONHILL | DHONT | HAMILTON | BIPARTITANSHIP| IMPERIALI
          * options: [
             {
              option: str,
@@ -194,7 +240,6 @@ class PostProcView(APIView):
         if t == 'IDENTITY':
             return self.identity(opts)
         
-          
         elif t=='HUNTINGTONHILL':
             return self.HuntingtonHill(options=opts, numEscanyos=numEscanyos)
 
@@ -206,5 +251,8 @@ class PostProcView(APIView):
           
         elif t == 'BIPARTISHANSHIP':
             return self.bipartishanship(options=opts, numEscanyos=numEscanyos)
+        
+        elif t=='IMPERIALI':
+            return self.imperiali(opts,numEscanos)
 
         return Response({})
