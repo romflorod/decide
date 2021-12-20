@@ -131,8 +131,12 @@ class PostProcView(APIView):
 
         t = request.data.get('type', 'IDENTITY')
         opts = request.data.get('options', [])
+        numEscanyos = request.data.get('numEscanyos', 0)
 
         if t == 'IDENTITY':
             return self.identity(opts)
+        elif t== 'HAMILTON':
+            
+            return self.hamilton(options=opts, numEscanyos=numEscanyos)
 
         return Response({})
