@@ -149,5 +149,4 @@ class PostProcView(APIView):
 
         if t == 'IDENTITY':
             return self.identity(opts)
-
         return Response({})

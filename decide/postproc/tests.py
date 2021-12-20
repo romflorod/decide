@@ -66,4 +66,10 @@ class PostProcTestCase(APITestCase):
             {'option':'F', 'number':6, 'votes':12.000, 'postproc':0},
             {'option':'G', 'number':7, 'votes':2.000, 'postproc':0},
         ]
+
+        response = self.client.post('/postproc/', data, format='json')
+        self.assertEqual(response.status_code, 200)
+
+        values = response.json()
+        self.assertEqual(values, expected_result)
     
