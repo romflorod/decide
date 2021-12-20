@@ -85,14 +85,15 @@ class PostProcView(APIView):
         return Response(options)
 
 
-    def imperiali(self, options,escanyosTotales):
-        votosTotales =0
+    def imperiali(self, options,numEscanyos):
+        votosTotales = 0
+        
         for i in options:
             votosTotales= votosTotales+ i['votes']
         
-        if votosTotales>0 and escanyosTotales>0:
+        if votosTotales>0 and numEscanyos>0:
 
-            q=round(options/(escanyosTotales+2))
+            q=round(votosTotales/(numEscanyos+2),0)
 
             escanyosAsigandos=0
             for i in options:
@@ -103,7 +104,7 @@ class PostProcView(APIView):
             
             #Mientras queden escaños libre
 
-            while(escanyosAsigandos<escanyosTotales):
+            while(escanyosAsigandos<numEscanyos):
                 #Se almacenan los votos residuo
                 for i in options:
                     i.update({'votosResiduos': i['votes']- (q*i['postproc'])})
@@ -121,7 +122,7 @@ class PostProcView(APIView):
                 for i in options:
                     i.pop('votosResiduos')
                 
-            options.sort(key = lambda i :-i['postrproc'])
+            options.sort(key = lambda i :-i['postproc'])
 
             return Response(options)
             
@@ -146,13 +147,12 @@ class PostProcView(APIView):
 
         t = request.data.get('type', 'IDENTITY')
         opts = request.data.get('options', [])
-        numEscanyos = request.data.get('numEscanyos', 0)
-
+        numEscanos = request.data.get('numEscanyos', 0)
 
         if t == 'IDENTITY':
             return self.identity(opts)
         elif t=='IMPERIALI':
-            return self.imperiali(escanyosTotales=numEscanyos, options=opts)
+            return self.imperiali(opts,numEscanos)
  
             
         return Response({})
