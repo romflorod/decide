@@ -45,6 +45,8 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
+loadtest/gen_census.py
+loadtest/locustfile.py
 
 # Translations
 *.mo
