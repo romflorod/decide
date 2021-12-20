@@ -60,10 +60,12 @@ class PostProcView(APIView):
 
         t = request.data.get('type', 'IDENTITY')
         opts = request.data.get('options', [])
+        numEscanyos = request.data.get('numEscanyos', 0)
+
 
         if t == 'IDENTITY':
             return self.identity(opts)
         elif t == 'SAINTELAGUE':
-            return self.saintelague(opts,numEscanos)
+            return self.saintelague(opts,numEscanyos)
 
         return Response({})
