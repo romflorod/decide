@@ -220,13 +220,13 @@ class PostProcView(APIView):
         return Response(options)
 
 
-    def saintelague(self,options,numEscanos):
+    def saintelague(self,options,numEscanyos):
 
         for op in options:
 
             op['postproc'] = 0
 
-        for i in range(0, numEscanos):
+        for i in range(0, numEscanyos):
 
             options_copy = []
 
@@ -283,9 +283,9 @@ class PostProcView(APIView):
             return self.bipartishanship(options=opts, numEscanyos=numEscanyos)
         
         elif t=='IMPERIALI':
-            return self.imperiali(opts,numEscanos)
+            return self.imperiali(options=opts, numEscanyos=numEscanyos)
 
         elif t == 'SAINTELAGUE':
-            return self.saintelague(opts,numEscanyos)
+            return self.saintelague(options=opts, numEscanyos=numEscanyos)
           
         return Response({})
