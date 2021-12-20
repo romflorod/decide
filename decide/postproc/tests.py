@@ -15,25 +15,24 @@ class PostProcTestCase(APITestCase):
     def tearDown(self):
         self.client = None
 
-    def test_identity(self):
+#test de la función de postproc Bipartisanship, 
+#comprueba que las dos opciones mayoritarias obtienen 25 y 15 escaños cada una
+    def test_bipartitanship(self):
         data = {
-            'type': 'IDENTITY',
+            'type': 'BIPARTISHANSHIP',
+            'numEscanyos': 40,
             'options': [
-                { 'option': 'Option 1', 'number': 1, 'votes': 5 },
+                { 'option': 'Option 1', 'number': 1, 'votes': 50 },
                 { 'option': 'Option 2', 'number': 2, 'votes': 0 },
-                { 'option': 'Option 3', 'number': 3, 'votes': 3 },
-                { 'option': 'Option 4', 'number': 4, 'votes': 2 },
-                { 'option': 'Option 5', 'number': 5, 'votes': 5 },
-                { 'option': 'Option 6', 'number': 6, 'votes': 1 },
+                { 'option': 'Option 3', 'number': 3, 'votes': 30 },
+                { 'option': 'Option 4', 'number': 4, 'votes': 20 },
             ]
         }
 
         expected_result = [
-            { 'option': 'Option 1', 'number': 1, 'votes': 5, 'postproc': 5 },
-            { 'option': 'Option 5', 'number': 5, 'votes': 5, 'postproc': 5 },
-            { 'option': 'Option 3', 'number': 3, 'votes': 3, 'postproc': 3 },
-            { 'option': 'Option 4', 'number': 4, 'votes': 2, 'postproc': 2 },
-            { 'option': 'Option 6', 'number': 6, 'votes': 1, 'postproc': 1 },
+            { 'option': 'Option 1', 'number': 1, 'votes': 50, 'postproc': 25 },
+            { 'option': 'Option 3', 'number': 3, 'votes': 30, 'postproc': 15 },
+            { 'option': 'Option 4', 'number': 4, 'votes': 20, 'postproc': 0 },
             { 'option': 'Option 2', 'number': 2, 'votes': 0, 'postproc': 0 },
         ]
     def test_hamilton(self):   
