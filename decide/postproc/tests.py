@@ -44,7 +44,7 @@ class PostProcTestCase(APITestCase):
                 {'option':'B', 'number':2,'votes': 80000},
                 {'option':'C', 'number':3,'votes': 30000},
                 {'option':'D', 'number':4,'votes': 20000}
-            ],
+            ], 'numEscanyos': 10
 
         }
 
