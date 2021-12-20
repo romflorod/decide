@@ -105,7 +105,7 @@ class PostProcTestCase(APITestCase):
                 {'option':'Option 5','number':5,'votes': 150000},
                 {'option':'Option 6','number':6,'votes': 16000}
             ],
-            'numEscanos': 10
+            'numEscanyos': 10
         }
 
         expected_result = [
@@ -135,7 +135,7 @@ class PostProcTestCase(APITestCase):
                 {'option':'Option 5','number':5,'votes': 62000},
                 {'option':'Option 6','number':6,'votes': 57000},
             ],
-            'numEscanos': 10
+            'numEscanyos': 10
         }
 
         expected_result = [
@@ -164,7 +164,7 @@ class PostProcTestCase(APITestCase):
                 {'option':'Option 4','number':4,'votes': 4500},
                 {'option':'Option 5','number':5,'votes': 2000},
             ],
-            'numEscanos': 100
+            'numEscanyos': 100
         }
 
         expected_result = [
@@ -190,7 +190,7 @@ class PostProcTestCase(APITestCase):
                 {'option':'Option 2','number':2,'votes': 50000},
                 {'option':'Option 3','number':3,'votes': 50000}
             ],
-            'numEscanos': 300
+            'numEscanyos': 300
         }
 
         expected_result = [
@@ -214,7 +214,7 @@ class PostProcTestCase(APITestCase):
                 {'option':'Option 2','number':2,'votes': 300300300300300},
                 {'option':'Option 3','number':3,'votes': 200200200200200}
             ],
-            'numEscanos': 100
+            'numEscanyos': 100
         }
 
         expected_result = [
@@ -240,7 +240,7 @@ class PostProcTestCase(APITestCase):
                 {'option':'Option 4','number':4,'votes': 5000},
                 {'option':'Option 5','number':5,'votes': 2500},
             ],
-            'numEscanos': 900
+            'numEscanyos': 900
         }
 
         expected_result = [
