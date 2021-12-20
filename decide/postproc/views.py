@@ -30,7 +30,7 @@ class PostProcView(APIView):
         votosTotales = option1['votes'] + option2['votes']
         proporcion = numEscanyos/votosTotales
         escanyos1 = round(option1['votes']*proporcion)
-        escanyos2 = round(option1['votes']*proporcion)
+        escanyos2 = round(option2['votes']*proporcion)
         sumaEscanyos = escanyos1 + escanyos2
         if sumaEscanyos != numEscanyos:
             sobrante = numEscanyos-sumaEscanyos
