@@ -50,7 +50,8 @@ class PostProcView(APIView):
                     numEscanyosAsignados+=1
         return Response(options)
 
-    def HuntingtonHill(self,numEscanyos,options):
+
+    def HuntingtonHill(self,options,numEscanyos):
     
         votosTotales = 0
         for x in options:
@@ -58,12 +59,12 @@ class PostProcView(APIView):
         
         if votosTotales > 0 and numEscanyos > 0:
 
-            limite = votosTotales/numEscanyos
+            limit = votosTotales/numEscanyos
 
-            #Crear parametros para metodo rounding rule
-            rounding = limite*0.001
-            lower = limite-rounding
-            upper = limite+rounding
+            #Vamos a aplicar la regla rounding
+            rounding = limit*0.001
+            lower = limit-rounding
+            upper = limit+rounding
 
             numEscanyosAsig = 0
 
@@ -71,14 +72,16 @@ class PostProcView(APIView):
 
                 #si llegamos a aplicar rounding rule y no llegamos al numero igual de escanos, 
                 #reseteamos de nuevo el numero de escanos asig y empezamos de nuevo
+              ##si no se cumple la regla reseteamos  cero
+                
                 numEscanyosAsig = 0
 
                 for x in options:
 
-                    if(x['votes']<limite):
+                    if(x['votes']<limit):
                         x['postproc']=0
                     else:
-                        cuota = x['votes']/limite
+                        cuota = x['votes']/limit
                         
                         if(isinstance(cuota,int)):
                             x['postproc']=cuota
@@ -94,20 +97,23 @@ class PostProcView(APIView):
                 
                     numEscanyosAsig += x['postproc']
 
-                #Huntington-Hill Rounding Rule
-                #For a quota q, let L denote its lower quota, U its upper quota, and G the
+                #Rounding Rule:
+                
+                
+                #For a quota q, let L denote it's lower quota, U its upper quota, and G the
                 #geometric mean of L and U. If then round q down to L, otherwise
                 #round q up to U.
 
                 if(numEscanyosAsig < numEscanyos):
-                    limite = lower
-                    lower = limite-rounding
-                    upper = limite+rounding
+
+                    limit = lower
+                    lower = limit-rounding
+                    upper = limit+rounding
 
                 else:
-                    limite = upper
-                    lower = limite-rounding
-                    upper = limite+rounding
+                    limit = upper
+                    lower = limit-rounding
+                    upper = limit+rounding
         else:
             for x in options:
                 x.update({'postproc' : 0})
@@ -116,9 +122,31 @@ class PostProcView(APIView):
         return Response(options)
 
 
+    def dHont(self, options, numEscanyos):
+
+        #Añadimos un campo para el contador de escaños asignados a cada opción
+        for op in options:
+            op['postproc'] = 0
+        
+        #Para cada escaño recorremos todas las opciones usando la fórmula de d'Hont: número de votos de esa opción/(número de escaños asignados a esa opción + 1)
+        for escano in range(0, numEscanyos):
+             #Lista de tamaño igual al número de opciones. Recuento al aplicar la fórmula a cada opción (ordenados en la misma forma)
+            recuento = []
+            for op in options:
+                r = op['votes'] / (op['postproc']+1)
+                recuento.append(r)
+            
+            #Obtenemos el índice del máximo valor en la lista de recuento de votos (del ganador del escaño)
+            ganador = recuento.index(max(recuento))
+            #En la posicion del ganador le sumamos 1 escaño
+            options[ganador]['postproc'] += 1
+
+        return Response(options)
+
+
     def post(self, request):
         """
-         * type: IDENTITY | EQUALITY | WEIGHT
+         * type: IDENTITY | HUNTINGTONHILL | DHONT | HAMILTON
          * options: [
             {
              option: str,
@@ -135,8 +163,14 @@ class PostProcView(APIView):
 
         if t == 'IDENTITY':
             return self.identity(opts)
+          
+        elif t=='HUNTINGTONHILL':
+            return self.HuntingtonHill(options=opts, numEscanyos=numEscanyos)
+
+        elif t == 'DHONT':
+            return self.dHont(options=opts, numEscanyos=numEscanyos)
+          
         elif t== 'HAMILTON':
-            
             return self.hamilton(options=opts, numEscanyos=numEscanyos)
 
         return Response({})
