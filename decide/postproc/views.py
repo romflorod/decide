@@ -20,58 +20,58 @@ class PostProcView(APIView):
         return Response(out)
     
 
-    def hamilton(self, options, numEscanos):
+    def hamilton(self, options, numEscanyos):
         #Definimos votos totales y el numero de escanyos asignados
         votos = 0
-        numEscanosAsignados=0
+        numEscanyosAsignados=0
         #Hacemos recuento de votos totales y le añadimos a cada opción otro valor llamado postproc en el que almacenaremos el numero de escanyos que le asignamos
         for option in options:
             option['postproc']=0
             votos += option['votes']
         #Creamos una lista vacia para introducir el resto de cada partido al anyadir los escanyos
         lista=[]
-        if votos>0 and numEscanos>0:
+        if votos>0 and numEscanyos>0:
             participantes = len(options)
             #Recorremos las opciones y al atributo postproc que habiamos creado anteriormente le asignamos un numero de escanyos mediante 
             #el siguiente calculo: (NumVotosPartido*NumEscanyos)//VotosTotales. El resultado sera una division exacta
             #A su vez rellenamos la lista vacia con un diccionario en el que ponemos el nombre de la opcion y el resto de la division
             #Tambien vamos incrementando el numero de escanyos asignados
             for option in options:
-                option['postproc']=(option['votes']*numEscanos)//votos
-                lista.append({'number':option['number'],'votes':(option['votes']*numEscanos)%votos})
-                numEscanosAsignados+=(option['votes']*numEscanos)//votos
+                option['postproc']=(option['votes']*numEscanyos)//votos
+                lista.append({'number':option['number'],'votes':(option['votes']*numEscanyos)%votos})
+                numEscanyosAsignados+=(option['votes']*numEscanyos)//votos
 
 
             lista.sort(key=lambda o: o['votes'],reverse=True)
             for option in lista:
                 i = option['number']-1
-                if(numEscanosAsignados<numEscanos):
+                if(numEscanyosAsignados<numEscanyos):
                     options[i].update({'postproc' : options[i]['postproc']+1})
-                    numEscanosAsignados+=1
+                    numEscanyosAsignados+=1
         return Response(options)
 
-    def HuntingtonHill(self,numEscanos,options):
+    def HuntingtonHill(self,numEscanyos,options):
     
         votosTotales = 0
         for x in options:
             votosTotales += x['votes']
         
-        if votosTotales > 0 and numEscanos > 0:
+        if votosTotales > 0 and numEscanyos > 0:
 
-            limite = votosTotales/numEscanos
+            limite = votosTotales/numEscanyos
 
             #Crear parametros para metodo rounding rule
             rounding = limite*0.001
             lower = limite-rounding
             upper = limite+rounding
 
-            numEscanosAsig = 0
+            numEscanyosAsig = 0
 
-            while(numEscanosAsig != numEscanos):
+            while(numEscanyosAsig != numEscanyos):
 
                 #si llegamos a aplicar rounding rule y no llegamos al numero igual de escanos, 
                 #reseteamos de nuevo el numero de escanos asig y empezamos de nuevo
-                numEscanosAsig = 0
+                numEscanyosAsig = 0
 
                 for x in options:
 
@@ -92,14 +92,14 @@ class PostProcView(APIView):
                             else:
                                 x['postproc']=lQ
                 
-                    numEscanosAsig += x['postproc']
+                    numEscanyosAsig += x['postproc']
 
                 #Huntington-Hill Rounding Rule
                 #For a quota q, let L denote its lower quota, U its upper quota, and G the
                 #geometric mean of L and U. If then round q down to L, otherwise
                 #round q up to U.
 
-                if(numEscanosAsig < numEscanos):
+                if(numEscanyosAsig < numEscanyos):
                     limite = lower
                     lower = limite-rounding
                     upper = limite+rounding
