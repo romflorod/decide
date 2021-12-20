@@ -146,7 +146,13 @@ class PostProcView(APIView):
 
         t = request.data.get('type', 'IDENTITY')
         opts = request.data.get('options', [])
+        numEscanyos = request.data.get('numEscanyos', 0)
+
 
         if t == 'IDENTITY':
             return self.identity(opts)
+        elif t=='IMPERIALI':
+            return self.imperiali(escanyosTotales=numEscanyos, options=opts)
+ 
+            
         return Response({})

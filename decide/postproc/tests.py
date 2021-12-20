@@ -58,10 +58,10 @@ class PostProcTestCase(APITestCase):
         }
 
         expected_result=[
-            {'option':'A', 'number':1, 'votes':391.000, 'postproc':9},
-            {'option':'B', 'number':2, 'votes':311.000, 'postproc':7},
-            {'option':'C', 'number':2, 'votes':184.000, 'postproc':4},
-            {'option':'D', 'number':4, 'votes':73.000, 'postproc':1},
+            {'option':'A', 'number':1, 'votes':391.000, 'postproc':0},
+            {'option':'B', 'number':2, 'votes':311.000, 'postproc':0},
+            {'option':'C', 'number':2, 'votes':184.000, 'postproc':0},
+            {'option':'D', 'number':4, 'votes':73.000, 'postproc':0},
             {'option':'E', 'number':5, 'votes':27.000, 'postproc':0},
             {'option':'F', 'number':6, 'votes':12.000, 'postproc':0},
             {'option':'G', 'number':7, 'votes':2.000, 'postproc':0},
