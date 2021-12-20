@@ -15,7 +15,9 @@ class PostProcTestCase(APITestCase):
     def tearDown(self):
         self.client = None
 
-    def test_identity(self):
+#test de la función de postproc Bipartisanship, 
+#comprueba que las dos opciones mayoritarias obtienen 25 y 15 escaños cada una
+    def test_bipartitanship(self):
         data = {
             'type': 'BIPARTITANSHIP',
             'numEscanyos': 40,
