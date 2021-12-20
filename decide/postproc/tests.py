@@ -118,10 +118,10 @@ class PostProcTestCase(APITestCase):
         }
 
         expected_result = [
-            {'option':'Option 1','number':1,'votes': 65000,'postproc': 32},
-            {'option':'Option 2','number':2,'votes': 30000,'postproc': 15},
-            {'option':'Option 3','number':3,'votes': 1500,'postproc': 0},
-            {'option':'Option 4','number':4,'votes': 4500,'postproc': 2},
+            {'option':'Option 1','number':1,'votes': 65000,'postproc': 65},
+            {'option':'Option 2','number':2,'votes': 30000,'postproc': 29},
+            {'option':'Option 3','number':3,'votes': 1500,'postproc': 1},
+            {'option':'Option 4','number':4,'votes': 4500,'postproc': 4},
             {'option':'Option 5','number':5,'votes': 2000,'postproc': 1},
         ]
 
@@ -180,7 +180,7 @@ class PostProcTestCase(APITestCase):
         self.assertEqual(values, expected_result)
 
     
-    def testDHont5(self): #Escaños elevados
+    def testDHont6(self): #Escaños elevados
         data = {
             'type': 'DHONT',
             'options': [
@@ -194,11 +194,11 @@ class PostProcTestCase(APITestCase):
         }
 
         expected_result = [
-            {'option':'Option 1','number':1,'votes': 15000,'postproc': 338},
-            {'option':'Option 2','number':2,'votes': 7500,'postproc': 169},
-            {'option':'Option 3','number':3,'votes': 10000,'postproc': 225},
-            {'option':'Option 4','number':4,'votes': 5000,'postproc': 112},
-            {'option':'Option 5','number':5,'votes': 2500,'postproc': 56}
+            {'option':'Option 1','number':1,'votes': 15000,'postproc': 126},
+            {'option':'Option 2','number':2,'votes': 75000,'postproc': 630},
+            {'option':'Option 3','number':3,'votes': 10000,'postproc': 83},
+            {'option':'Option 4','number':4,'votes': 5000,'postproc': 41},
+            {'option':'Option 5','number':5,'votes': 2500,'postproc': 20}
         ]
 
         response = self.client.post('/postproc/', data, format='json')
