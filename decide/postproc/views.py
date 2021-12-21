@@ -18,36 +18,70 @@ class PostProcView(APIView):
 
         out.sort(key=lambda x: -x['postproc'])
         return Response(out)
+    
 
-    def HuntingtonHill(self,numEscanos,options):
+    def hamilton(self, options, numEscanyos):
+        #Definimos votos totales y el numero de escanyos asignados
+        votos = 0
+        numEscanyosAsignados=0
+        #Hacemos recuento de votos totales y le añadimos a cada opción otro valor llamado postproc en el que almacenaremos el numero de escanyos que le asignamos
+        for option in options:
+            option['postproc']=0
+            votos += option['votes']
+        #Creamos una lista vacia para introducir el resto de cada partido al anyadir los escanyos
+        lista=[]
+        if votos>0 and numEscanyos>0:
+            participantes = len(options)
+            #Recorremos las opciones y al atributo postproc que habiamos creado anteriormente le asignamos un numero de escanyos mediante 
+            #el siguiente calculo: (NumVotosPartido*NumEscanyos)//VotosTotales. El resultado sera una division exacta
+            #A su vez rellenamos la lista vacia con un diccionario en el que ponemos el nombre de la opcion y el resto de la division
+            #Tambien vamos incrementando el numero de escanyos asignados
+            for option in options:
+                option['postproc']=(option['votes']*numEscanyos)//votos
+                lista.append({'number':option['number'],'votes':(option['votes']*numEscanyos)%votos})
+                numEscanyosAsignados+=(option['votes']*numEscanyos)//votos
+
+
+            lista.sort(key=lambda o: o['votes'],reverse=True)
+            for option in lista:
+                i = option['number']-1
+                if(numEscanyosAsignados<numEscanyos):
+                    options[i].update({'postproc' : options[i]['postproc']+1})
+                    numEscanyosAsignados+=1
+        return Response(options)
+
+
+    def HuntingtonHill(self,options,numEscanyos):
     
         votosTotales = 0
         for x in options:
             votosTotales += x['votes']
         
-        if votosTotales > 0 and numEscanos > 0:
+        if votosTotales > 0 and numEscanyos > 0:
 
-            limite = votosTotales/numEscanos
+            limit = votosTotales/numEscanyos
 
-            #Crear parametros para metodo rounding rule
-            rounding = limite*0.001
-            lower = limite-rounding
-            upper = limite+rounding
+            #Vamos a aplicar la regla rounding
+            rounding = limit*0.001
+            lower = limit-rounding
+            upper = limit+rounding
 
-            numEscanosAsig = 0
+            numEscanyosAsig = 0
 
-            while(numEscanosAsig != numEscanos):
+            while(numEscanyosAsig != numEscanyos):
 
                 #si llegamos a aplicar rounding rule y no llegamos al numero igual de escanos, 
                 #reseteamos de nuevo el numero de escanos asig y empezamos de nuevo
-                numEscanosAsig = 0
+              ##si no se cumple la regla reseteamos  cero
+                
+                numEscanyosAsig = 0
 
                 for x in options:
 
-                    if(x['votes']<limite):
+                    if(x['votes']<limit):
                         x['postproc']=0
                     else:
-                        cuota = x['votes']/limite
+                        cuota = x['votes']/limit
                         
                         if(isinstance(cuota,int)):
                             x['postproc']=cuota
@@ -61,22 +95,25 @@ class PostProcView(APIView):
                             else:
                                 x['postproc']=lQ
                 
-                    numEscanosAsig += x['postproc']
+                    numEscanyosAsig += x['postproc']
 
-                #Huntington-Hill Rounding Rule
-                #For a quota q, let L denote its lower quota, U its upper quota, and G the
+                #Rounding Rule:
+                
+                
+                #For a quota q, let L denote it's lower quota, U its upper quota, and G the
                 #geometric mean of L and U. If then round q down to L, otherwise
                 #round q up to U.
 
-                if(numEscanosAsig < numEscanos):
-                    limite = lower
-                    lower = limite-rounding
-                    upper = limite+rounding
+                if(numEscanyosAsig < numEscanyos):
+
+                    limit = lower
+                    lower = limit-rounding
+                    upper = limit+rounding
 
                 else:
-                    limite = upper
-                    lower = limite-rounding
-                    upper = limite+rounding
+                    limit = upper
+                    lower = limit-rounding
+                    upper = limit+rounding
         else:
             for x in options:
                 x.update({'postproc' : 0})
@@ -131,10 +168,61 @@ class PostProcView(APIView):
                 i.update({'postproc': 0})
             return Response(options)
 
+    def dHont(self, options, numEscanyos):
+
+        #Añadimos un campo para el contador de escaños asignados a cada opción
+        for op in options:
+            op['postproc'] = 0
+        
+        #Para cada escaño recorremos todas las opciones usando la fórmula de d'Hont: número de votos de esa opción/(número de escaños asignados a esa opción + 1)
+        for escano in range(0, numEscanyos):
+             #Lista de tamaño igual al número de opciones. Recuento al aplicar la fórmula a cada opción (ordenados en la misma forma)
+            recuento = []
+            for op in options:
+                r = op['votes'] / (op['postproc']+1)
+                recuento.append(r)
+            
+            #Obtenemos el índice del máximo valor en la lista de recuento de votos (del ganador del escaño)
+            ganador = recuento.index(max(recuento))
+            #En la posicion del ganador le sumamos 1 escaño
+            options[ganador]['postproc'] += 1
+
+        return Response(options)
+
+
+
+    def bipartishanship(self, options, numEscanyos):
+        # función de ordenación
+        def sortByVotes(e):
+            return e['votes']
+        # copiamos las opciones, ordenamos y obtenemos las dos con mayor número de votos        
+        opts = options
+        opts.sort(reverse=True,key=sortByVotes)
+        option1=opts[0]
+        option2=opts[1]
+        #calculamos la proporción de peso por cada voto   
+        votosTotales = option1['votes'] + option2['votes']
+        proporcion = numEscanyos/votosTotales
+        escanyos1 = round(option1['votes']*proporcion)
+        escanyos2 = round(option2['votes']*proporcion)
+        sumaEscanyos = escanyos1 + escanyos2
+        #si queda algún escaño sin asignar se lo damos al primero
+        if sumaEscanyos != numEscanyos:
+            sobrante = numEscanyos-sumaEscanyos
+            escanyos1 +=sobrante
+        #inicializamos y asignamos los escaños a los dos primeros
+        for op in opts:
+            op['postproc'] = 0
+        opts[0]['postproc'] = escanyos1
+        opts[1]['postproc'] = escanyos2
+        #reemplazamos las opciones y devolvemos el resultado
+        options = opts
+        return Response(options)
+
 
     def post(self, request):
         """
-         * type: IDENTITY | EQUALITY | WEIGHT
+         * type: IDENTITY | HUNTINGTONHILL | DHONT | HAMILTON | BIPARTITANSHIP| IMPERIALI
          * options: [
             {
              option: str,
@@ -147,12 +235,24 @@ class PostProcView(APIView):
 
         t = request.data.get('type', 'IDENTITY')
         opts = request.data.get('options', [])
-        numEscanos = request.data.get('numEscanyos', 0)
+        numEscanyos = request.data.get('numEscanyos', 0)
 
         if t == 'IDENTITY':
             return self.identity(opts)
+        
+        elif t=='HUNTINGTONHILL':
+            return self.HuntingtonHill(options=opts, numEscanyos=numEscanyos)
+
+        elif t == 'DHONT':
+            return self.dHont(options=opts, numEscanyos=numEscanyos)
+          
+        elif t== 'HAMILTON':
+            return self.hamilton(options=opts, numEscanyos=numEscanyos)
+          
+        elif t == 'BIPARTISHANSHIP':
+            return self.bipartishanship(options=opts, numEscanyos=numEscanyos)
+        
         elif t=='IMPERIALI':
             return self.imperiali(opts,numEscanos)
- 
-            
+
         return Response({})
