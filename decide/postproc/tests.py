@@ -54,7 +54,8 @@ class PostProcTestCase(APITestCase):
             {'option':'E', 'number':5, 'votes':27.000},
             {'option':'F', 'number':6, 'votes':12.000},
             {'option':'G', 'number':7, 'votes':2.000},
-        ], 'numEscanos':21
+        ], 
+        'numEscanyos':21
         }
 
         expected_result=[
