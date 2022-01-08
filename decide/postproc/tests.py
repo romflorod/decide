@@ -866,12 +866,17 @@ class PostProcTestCase(APITestCase):
         'numEscanyos':0
         }
 
-        expected_result=[
+        expected_result = [
             {'option':'A', 'number':1, 'votes':10, 'postproc':0},
             {'option':'B', 'number':2, 'votes':20, 'postproc':0},
             {'option':'C', 'number':3, 'votes':5, 'postproc':0},
             {'option':'D', 'number':4, 'votes':6, 'postproc':0}
-
+        ]
+        response = self.client.post('/postproc/', data, format='json')
+        self.assertEqual(response.status_code, 200)
+        values = response.json()
+        self.assertEqual(values, expected_result)
+        
     def test_saintelague4GrandesDatos(self):
         data = {
                 'type': 'SAINTELAGUE',
