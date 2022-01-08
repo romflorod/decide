@@ -347,3 +347,31 @@ class PostProcTestCase(APITestCase):
         values = response.json()
         self.assertEqual(values, expected_result)
 
+    def test_imperiali2(self):
+        data={
+        'type':'IMPERIALI',
+        'options':[
+
+            {'option':'A', 'number':1, 'votes':1000},
+            {'option':'B', 'number':2, 'votes':2000},
+            {'option':'C', 'number':3, 'votes':400},
+            {'option':'D', 'number':4, 'votes':30}
+        ], 
+        'numEscanyos':300
+
+
+        }
+
+        expected_result=[
+            {'option':'B', 'number':2, 'votes':2000, 'postproc':181},
+            {'option':'A', 'number':1, 'votes':1000, 'postproc':90},
+            {'option':'C', 'number':3, 'votes':400, 'postproc':36},
+            {'option':'D', 'number':4, 'votes':30, 'postproc':2}
+        ]
+
+        response = self.client.post('/postproc/', data, format='json')
+        self.assertEqual(response.status_code, 200)
+
+        values = response.json()
+        self.assertEqual(values, expected_result)
+
