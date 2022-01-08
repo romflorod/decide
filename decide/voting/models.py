@@ -115,6 +115,7 @@ class Voting(models.Model):
                 'option': opt.option,
                 'number': opt.number,
                 'votes': votes
+                
             })
 
         data = { 'type': self.tipo, 'options': opts , 'numEscanyos': self.numEscanyos }

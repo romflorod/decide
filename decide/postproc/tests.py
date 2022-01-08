@@ -732,24 +732,29 @@ class PostProcTestCase(APITestCase):
         data={
         'type':'IMPERIALI',
         'options':[
-            {'option':'A', 'number':1, 'votes':391.000},
-            {'option':'B', 'number':2, 'votes':311.000},
-            {'option':'C', 'number':2, 'votes':184.000},
-            {'option':'D', 'number':4, 'votes':73.000},
-            {'option':'E', 'number':5, 'votes':27.000},
-            {'option':'F', 'number':6, 'votes':12.000},
-            {'option':'G', 'number':7, 'votes':2.000},
-        ], 'numEscanyos':21
+
+            {'option':'A', 'number':1, 'votes':391000},
+            {'option':'B', 'number':2, 'votes':311000},
+            {'option':'C', 'number':2, 'votes':184000},
+            {'option':'D', 'number':4, 'votes':73000},
+            {'option':'E', 'number':5, 'votes':27000},
+            {'option':'F', 'number':6, 'votes':12000},
+            {'option':'G', 'number':7, 'votes':2000},
+
+        ], 
+        'numEscanyos':21
+
+
         }
 
         expected_result=[
-            {'option':'A', 'number':1, 'votes':391.000, 'postproc':9},
-            {'option':'B', 'number':2, 'votes':311.000, 'postproc':7},
-            {'option':'C', 'number':2, 'votes':184.000, 'postproc':4},
-            {'option':'D', 'number':4, 'votes':73.000, 'postproc':1},
-            {'option':'E', 'number':5, 'votes':27.000, 'postproc':0},
-            {'option':'F', 'number':6, 'votes':12.000, 'postproc':0},
-            {'option':'G', 'number':7, 'votes':2.000, 'postproc':0},
+            {'option':'A', 'number':1, 'votes':391000, 'postproc':9},
+            {'option':'B', 'number':2, 'votes':311000, 'postproc':7},
+            {'option':'C', 'number':2, 'votes':184000, 'postproc':4},
+            {'option':'D', 'number':4, 'votes':73000, 'postproc':1},
+            {'option':'E', 'number':5, 'votes':27000, 'postproc':0},
+            {'option':'F', 'number':6, 'votes':12000, 'postproc':0},
+            {'option':'G', 'number':7, 'votes':2000, 'postproc':0},
         ]
 
         response = self.client.post('/postproc/', data, format='json')
@@ -824,6 +829,48 @@ class PostProcTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
         values = response.json()
         self.assertEqual(values, expected_result)
+
+    def test_imperiali2(self):
+        data={
+        'type':'IMPERIALI',
+        'options':[
+
+            {'option':'A', 'number':1, 'votes':1000},
+            {'option':'B', 'number':2, 'votes':2000},
+            {'option':'C', 'number':3, 'votes':400},
+            {'option':'D', 'number':4, 'votes':30}
+        ], 
+        'numEscanyos':300
+
+
+        }
+
+        expected_result=[
+            {'option':'B', 'number':2, 'votes':2000, 'postproc':181},
+            {'option':'A', 'number':1, 'votes':1000, 'postproc':90},
+            {'option':'C', 'number':3, 'votes':400, 'postproc':36},
+            {'option':'D', 'number':4, 'votes':30, 'postproc':2}
+        ]
+
+#test Imperiali con 0 escaños a repartir
+    def test_imperiali3(self):
+        data={
+        'type':'IMPERIALI',
+        'options':[
+
+            {'option':'A', 'number':1, 'votes':10},
+            {'option':'B', 'number':2, 'votes':20},
+            {'option':'C', 'number':3, 'votes':5},
+            {'option':'D', 'number':4, 'votes':6}
+        ], 
+        'numEscanyos':0
+        }
+
+        expected_result=[
+            {'option':'A', 'number':1, 'votes':10, 'postproc':0},
+            {'option':'B', 'number':2, 'votes':20, 'postproc':0},
+            {'option':'C', 'number':3, 'votes':5, 'postproc':0},
+            {'option':'D', 'number':4, 'votes':6, 'postproc':0}
 
     def test_saintelague4GrandesDatos(self):
         data = {
@@ -1025,3 +1072,4 @@ class PostProcTestCase(APITestCase):
 
             values = response.json()
             self.assertEqual(values, expected_result)
+
