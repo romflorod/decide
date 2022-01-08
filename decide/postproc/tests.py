@@ -46,11 +46,11 @@ class PostProcTestCase(APITestCase):
 
     
     
-#test de la función de postproc Bipartisanship, 
+#test de la función de postproc Bipartitanship, 
 #comprueba que las dos opciones mayoritarias obtienen 25 y 15 escaños cada una
     def test_bipartitanship(self):
         data = {
-            'type': 'BIPARTISHANSHIP',
+            'type': 'BIPARTITANSHIP',
             'numEscanyos': 40,
             'options': [
                 { 'option': 'Option 1', 'number': 1, 'votes': 50 },
@@ -74,7 +74,7 @@ class PostProcTestCase(APITestCase):
     
     def test_bipartitanship2(self):
             data = {
-            'type': 'BIPARTISHANSHIP',
+            'type': 'BIPARTITANSHIP',
             'numEscanyos': 30,
             'options': [
                 { 'option': 'Option 1', 'number': 1, 'votes': 40 },
@@ -98,7 +98,7 @@ class PostProcTestCase(APITestCase):
     
     def test_bipartitanship3(self):
         data = {
-            'type': 'BIPARTISHANSHIP',
+            'type': 'BIPARTITANSHIP',
             'numEscanyos': 50,
             'options': [
                 { 'option': 'Option 1', 'number': 1, 'votes': 50 },
@@ -116,7 +116,7 @@ class PostProcTestCase(APITestCase):
         ]
     def test_bipartitanship4(self):
             data = {
-            'type': 'BIPARTISHANSHIP',
+            'type': 'BIPARTITANSHIP',
             'numEscanyos': 60,
             'options': [
                 { 'option': 'Option 1', 'number': 1, 'votes': 70 },
@@ -141,7 +141,7 @@ class PostProcTestCase(APITestCase):
             
     def test_bipartitanship5(self):
             data = {
-            'type': 'BIPARTISHANSHIP',
+            'type': 'BIPARTITANSHIP',
             'numEscanyos': 10,
             'options': [
                 { 'option': 'Option 1', 'number': 1, 'votes': 70 },
@@ -166,7 +166,7 @@ class PostProcTestCase(APITestCase):
 
     def test_bipartitanship6(self):
             data = {
-            'type': 'BIPARTISHANSHIP',
+            'type': 'BIPARTITANSHIP',
             'numEscanyos': 100,
             'options': [
                 { 'option': 'Option 1', 'number': 1, 'votes': 100000 },
@@ -460,7 +460,33 @@ class PostProcTestCase(APITestCase):
         values = response.json()
         self.assertEqual(values, expected_result)
 
-             
+    def testHuntington7(self):   
+        data = {
+            'type': 'HUNTINGTONHILL', 
+            'options': [
+        {'option':'A','number':1,'votes': 12300},
+        {'option':'B', 'number':2,'votes': 81000},
+        {'option':'C', 'number':3,'votes': 200},
+        {'option':'D', 'number':4,'votes': 10}
+        ], 'numEscanyos': 200
+
+        }
+
+        expected_result = [
+        {'option':'A','number':1,'votes': 12300,'postproc':26}, 
+        {'option':'B', 'number':2,'votes': 81000,'postproc':174}, 
+        {'option':'C', 'number':3,'votes': 200,'postproc':0},
+        {'option':'D', 'number':4,'votes': 10,'postproc':0}
+        
+]
+        response = self.client.post('/postproc/', data, format='json') 
+
+        self.assertEqual(response.status_code, 200)
+        values = response.json()
+        self.assertEqual(values, expected_result)
+
+    
+
     def testDHont1(self): #Fácil de comprobar manualmente
         data = {
             'type': 'DHONT',
