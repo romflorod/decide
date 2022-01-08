@@ -129,37 +129,53 @@ class PostProcView(APIView):
             votosTotales= votosTotales+ i['votes']
         
         if votosTotales>0 and numEscanyos>0:
+            if votosTotales>(numEscanyos+2):
+                q=round(votosTotales/(numEscanyos+2),0)
 
-            q=round(votosTotales/(numEscanyos+2),0)
-
-            escanyosAsigandos=0
-            for i in options:
-                votos= i['votes']
-                escanyos=math.floor(votos/q)
-                i.update({'postproc': escanyos})
-                escanyosAsigandos=escanyosAsigandos+i['postproc']
+                escanyosAsigandos=0
+                for i in options:
+                    votos= i['votes']
+                    escanyos=math.trunc(votos/q)
+                    i.update({'postproc': escanyos})
+                    escanyosAsigandos=escanyosAsigandos+i['postproc']
             
             #Mientras queden escaños libre
 
-            while(escanyosAsigandos<numEscanyos):
+                while(escanyosAsigandos<numEscanyos):
                 #Se almacenan los votos residuo
-                for i in options:
-                    i.update({'votosResiduos': i['votes']- (q*i['postproc'])})
+                    for i in options:
+                        i.update({'votosResiduos': i['votes']- (q*i['postproc'])})
                 
                 
                 #se ordena según los votos residuos
-                ordenadoMayorMenor= options.sort(key = lambda i :-i['votosResiduos'])
+                    options.sort(key = lambda i :-i['votosResiduos'])
 
 
                 #se añade un escaño más al que tenga mayor residuo
-                votoMayorResiduo= ordenadoMayorMenor[0]
-                votoMayorResiduo.update({'postproc': votoMayorResiduo['postproc']+1})
+                    votoMayorResiduo= options[0]
+                    votoMayorResiduo.update({'postproc': votoMayorResiduo['postproc']+1})
+                    escanyosAsigandos=escanyosAsigandos+1
 
                 #se elimina la nueva clave para que no afecte a futuras iteraciones
-                for i in options:
-                    i.pop('votosResiduos')
+                    for i in options:
+                        i.pop('votosResiduos')
                 
-            options.sort(key = lambda i :-i['postproc'])
+                options.sort(key = lambda i :-i['postproc'])
+            else:
+                escanyosAsigandos=0
+                for i in options:
+                    votos= i['votes']
+                    numOpciones=len(options)
+                    escanyos=math.trunc(votos/numOpciones)
+                    i.update({'postproc': escanyos})
+                    escanyosAsigandos=escanyosAsigandos+i['postproc']
+
+                if  escanyosAsigandos<numEscanyos:
+                    for i in options:
+                        options.sort(key = lambda i :-i['votes'])
+                    votoMayorResiduo= options[0]
+                    votoMayorResiduo.update({'postproc': votoMayorResiduo['postproc']+1})
+                    escanyosAsigandos=escanyosAsigandos+1
 
             return Response(options)
             
