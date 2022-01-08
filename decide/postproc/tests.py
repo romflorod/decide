@@ -214,7 +214,32 @@ class PostProcTestCase(APITestCase):
 
             values = response.json()
             self.assertEqual(values, expected_result)           
-           
+ 
+    def test_bipartitanship8(self):
+            data = {
+            'type': 'BIPARTITANSHIP',
+            'numEscanyos': 0,
+            'options': [
+                { 'option': 'Option 1', 'number': 1, 'votes': 55 },
+                { 'option': 'Option 2', 'number': 2, 'votes': 25 },
+                { 'option': 'Option 3', 'number': 3, 'votes': 22 },
+                { 'option': 'Option 4', 'number': 4, 'votes': 12 },
+            ]
+        }
+
+            expected_result = [
+            { 'option': 'Option 1', 'number': 1, 'votes': 55, 'postproc': 0 },
+            { 'option': 'Option 2', 'number': 2, 'votes': 25, 'postproc': 0 },
+            { 'option': 'Option 3', 'number': 3, 'votes': 22, 'postproc': 0 },
+            { 'option': 'Option 4', 'number': 4, 'votes': 12, 'postproc': 0 },
+        ]    
+        
+            response = self.client.post('/postproc/', data, format='json')
+            self.assertEqual(response.status_code, 200)
+
+            values = response.json()
+            self.assertEqual(values, expected_result)           
+                     
            
    
     def test_hamilton(self):   
@@ -334,7 +359,32 @@ class PostProcTestCase(APITestCase):
 
         values = response.json()
         self.assertEqual(values, expected_result) 
-    
+
+#test negativo, se asignan 0 escaños
+    def test_hamilton6(self):   
+        data = {
+            'type': 'HAMILTON',
+            'options': [
+                {'option':'A','number':1,'votes': 1000},
+                {'option':'B', 'number':2,'votes': 8000},
+                {'option':'C', 'number':3,'votes': 300},
+                {'option':'D', 'number':4,'votes': 201}
+            ], 'numEscanyos': 0
+
+        }
+
+        expected_result = [
+            {'option':'A','number':1,'votes': 1000, 'postproc':0},
+            {'option':'B', 'number':2,'votes': 8000, 'postproc': 0},
+            {'option':'C', 'number':3,'votes': 300, 'postproc': 0},
+            {'option':'D', 'number':4,'votes': 201, 'postproc': 0}
+        ]
+        response = self.client.post('/postproc/', data, format='json')
+        self.assertEqual(response.status_code, 200)
+
+        values = response.json()
+        self.assertEqual(values, expected_result) 
+        
     def testHuntington(self):   
         data = {
             'type': 'HUNTINGTONHILL', 
