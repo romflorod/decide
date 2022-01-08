@@ -220,9 +220,38 @@ class PostProcView(APIView):
         return Response(options)
 
 
+    def saintelague(self,options,numEscanyos):
+
+        for op in options:
+
+            op['postproc'] = 0
+
+        for i in range(0, numEscanyos):
+
+            options_copy = []
+
+            for op in options:
+
+                o = op['votes'] / (2*op['postproc']+1)
+
+                options_copy.append(o)
+
+            if op['votes'] != 0:
+
+                maximo = max(options_copy)
+
+                pos_maximo = options_copy.index(maximo)
+
+                options[pos_maximo]['postproc'] += 1
+        
+        options.sort(key=lambda x: -x['postproc'])
+
+        return Response(options)
+
+
     def post(self, request):
         """
-         * type: IDENTITY | HUNTINGTONHILL | DHONT | HAMILTON | BIPARTITANSHIP| IMPERIALI
+         * type: IDENTITY | HUNTINGTONHILL | DHONT | HAMILTON | BIPARTITANSHIP| IMPERIALI| SAINTELAGUE
          * options: [
             {
              option: str,
@@ -236,6 +265,7 @@ class PostProcView(APIView):
         t = request.data.get('type', 'IDENTITY')
         opts = request.data.get('options', [])
         numEscanyos = request.data.get('numEscanyos', 0)
+
 
         if t == 'IDENTITY':
             return self.identity(opts)
@@ -253,6 +283,9 @@ class PostProcView(APIView):
             return self.bipartishanship(options=opts, numEscanyos=numEscanyos)
         
         elif t=='IMPERIALI':
-            return self.imperiali(opts,numEscanos)
+            return self.imperiali(options=opts, numEscanyos=numEscanyos)
 
+        elif t == 'SAINTELAGUE':
+            return self.saintelague(options=opts, numEscanyos=numEscanyos)
+          
         return Response({})
