@@ -207,7 +207,7 @@ class PostProcView(APIView):
 
 
 
-    def bipartishanship(self, options, numEscanyos):
+    def bipartitanship(self, options, numEscanyos):
         # función de ordenación
         def sortByVotes(e):
             return e['votes']
@@ -237,13 +237,15 @@ class PostProcView(APIView):
 
 
     def saintelague(self,options,numEscanyos):
-
+        #tomamos los datos
         for op in options:
+        #ardará el registro de los escaños de cada opción, añadimos a cada opción otro valor llamado postproc en el que almacenaremos el numero de escanyos que le asignamos
 
             op['postproc'] = 0
+        #Para cada escaño recorremos todas las opciones usando la fórmula de SL : Nº de votos/(2 Nº de  escaños + 1)
 
         for i in range(0, numEscanyos):
-
+            #Lista de tamaño igual al número de opciones. Recuento al aplicar la fórmula a cada opción (ordenados en la misma forma):
             options_copy = []
 
             for op in options:
@@ -251,15 +253,16 @@ class PostProcView(APIView):
                 o = op['votes'] / (2*op['postproc']+1)
 
                 options_copy.append(o)
+            #procesamos los votos de las opciones para hacer el reparto de escaños. descartamos realizar el procedimiento para las opciones sin votos ya que no se llevarán ningún escaño.
 
             if op['votes'] != 0:
-
+                #Buscamos de la lista copiada el mayor atributo ordenado por número de votos, esa será la opción elegida que ganará un escaño.
                 maximo = max(options_copy)
-
+                #La acción de añadir un escaño a la opción si la realizamos en la lista original así que para ello necesitamos la posición que tiene dicha opción en la copia de la lista pues será la misma posición que ocupe en nuestra lista original.
                 pos_maximo = options_copy.index(maximo)
-
+                #En la posición del ganador le sumamos 1 escaño
                 options[pos_maximo]['postproc'] += 1
-        
+                #Una vez repartidos todos los escaños disponibles, procedemos a ordenar la lista resultante de mayor a menor según el número de escaños y devolvemos el resultado.
         options.sort(key=lambda x: -x['postproc'])
 
         return Response(options)
@@ -295,8 +298,8 @@ class PostProcView(APIView):
         elif t== 'HAMILTON':
             return self.hamilton(options=opts, numEscanyos=numEscanyos)
           
-        elif t == 'BIPARTISHANSHIP':
-            return self.bipartishanship(options=opts, numEscanyos=numEscanyos)
+        elif t == 'BIPARTITANSHIP':
+            return self.bipartitanship(options=opts, numEscanyos=numEscanyos)
         
         elif t=='IMPERIALI':
             return self.imperiali(options=opts, numEscanyos=numEscanyos)
