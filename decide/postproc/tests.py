@@ -162,7 +162,32 @@ class PostProcTestCase(APITestCase):
             self.assertEqual(response.status_code, 200)
 
             values = response.json()
-            self.assertEqual(values, expected_result)           
+            self.assertEqual(values, expected_result)
+
+    def test_bipartitanship6(self):
+            data = {
+            'type': 'BIPARTISHANSHIP',
+            'numEscanyos': 60,
+            'options': [
+                { 'option': 'Option 1', 'number': 1, 'votes': 100000 },
+                { 'option': 'Option 2', 'number': 2, 'votes': 80000 },
+                { 'option': 'Option 3', 'number': 3, 'votes': 30000 },
+                { 'option': 'Option 4', 'number': 4, 'votes': 20000 },
+            ]
+        }
+
+            expected_result = [
+            { 'option': 'Option 1', 'number': 1, 'votes': 100000, 'postproc': 33 },
+            { 'option': 'Option 3', 'number': 2, 'votes': 80000, 'postproc': 27 },
+            { 'option': 'Option 4', 'number': 3, 'votes': 30000, 'postproc': 0 },
+            { 'option': 'Option 2', 'number': 4, 'votes': 20000, 'postproc': 0 },
+        ]    
+        
+            response = self.client.post('/postproc/', data, format='json')
+            self.assertEqual(response.status_code, 200)
+
+            values = response.json()
+            self.assertEqual(values, expected_result)             
    
     def test_hamilton(self):   
         data = {
