@@ -69,6 +69,7 @@ MODULES = [
 ]
 
 BASEURL = 'https://decide-mulhacen-2.herokuapp.com'
+
 APIS = {
     'authentication': BASEURL,
     'base': BASEURL,
@@ -80,6 +81,7 @@ APIS = {
     'visualizer': BASEURL,
     'voting': BASEURL,
 }
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -190,5 +192,3 @@ if os.path.exists("config.jsonnet"):
 
 INSTALLED_APPS = INSTALLED_APPS + MODULES
 
-import django_heroku
-django_heroku.settings(locals(),test_runner=False)
