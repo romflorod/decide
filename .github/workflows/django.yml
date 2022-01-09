@@ -47,5 +47,5 @@ jobs:
     - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
       with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: " decide-mulhacen-2"
-          heroku_email: " romanflodriguez13@gmail.com"
+          heroku_app_name: "decide-mulhacen-2"
+          heroku_email: "romanflodriguez13@gmail.com"
