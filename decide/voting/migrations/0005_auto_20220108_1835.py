@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='voting',
             name='tipo',
-            field=models.CharField(choices=[('IDENTITY', 'IDENTITY'), ('HUNTINGTONHILL', 'HUNTINGTONHILL'), ('DHONT', 'DHONT'), ('HAMILTON', 'HAMILTON'), ('BIPARTISHANSHIP', 'BIPARTISHANSHIP'), ('IMPERIALI', 'IMPERIALI'), ('SAINTELAGUE', 'SAINTELAGUE')], default='IDENTITY', max_length=20, verbose_name='Count method'),
+            field=models.CharField(choices=[('IDENTITY', 'IDENTITY'), ('HUNTINGTONHILL', 'HUNTINGTONHILL'), ('DHONT', 'DHONT'), ('HAMILTON', 'HAMILTON'), ('BIPARTITANSHIP', 'BIPARTITANSHIP'), ('IMPERIALI', 'IMPERIALI'), ('SAINTELAGUE', 'SAINTELAGUE')], default='IDENTITY', max_length=20, verbose_name='Count method'),
         ),
     ]
