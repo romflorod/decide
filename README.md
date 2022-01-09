@@ -12,6 +12,14 @@ cuando sea posible. Por lo tanto se asumen algunas carencias para permitir
 que sea entendible y extensible.
 
 
+Dockerizacion 
+-----------------
+1- descargar el archivo .zip 
+2- abrir la carpeta docker y realizar docker-compose-up 
+3- usando docker desktop entrar en decide_web y añadir un super usuario con el que entramos(./manage.py createsuperuser)
+
+
+
 Subsistemas, apps y proyecto base
 ---------------------------------
 
