@@ -1,5 +1,4 @@
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/6e5234483c734d7d8a4d4ccd18958c31)](https://www.codacy.com/gh/romflorod/decide/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=romflorod/decide&amp;utm_campaign=Badge_Grade)
-Prueba de commit 7
+
 Plataforma voto electrónico educativa
 
 El objetivo de este proyecto es implementar una plataforma de voto
