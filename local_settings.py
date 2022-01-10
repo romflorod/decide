@@ -21,3 +21,5 @@ DATABASES = {
 'PASSWORD': 'decide',
 'HOST': 'localhost',
 'PORT': '5432', }}
+
+KEYBITS = 256
